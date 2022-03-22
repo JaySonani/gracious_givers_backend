@@ -1,0 +1,16 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const donationSchema = new Schema(
+    {
+        _id: { type: String, required: true },
+        donation_event_id: { type: String, required: true },
+        donation_amount: { type: String, required: true },
+        donor_firstname: { type: String, required: true },
+        donor_lasttname: { type: String, required: true },
+        donor_email: { type: String, required: true }
+    },
+    { timestamps: true }
+);
+
+module.exports = mongoose.model('donations', donationSchema);

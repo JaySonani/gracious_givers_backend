@@ -1,13 +1,15 @@
-// Importing Express
+// Importing modules
 const express = require('express')
+const mongoose = require('mongoose');
 
 // Configuring server
 const app = express()
 const port = process.env.PORT || 5000
+const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
+app.use(express.json())
 
 // Import all routes here
-// const route1 = require("./routes/route1");
-// const route2 = require("./routes/route2");
+const donationRoute = require("./routes/donation");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -15,16 +17,19 @@ app.get("/", (request, response) => {
 });
 
 // Define all routes here
-// app.use("/route1", route1);
-// app.use("/route2", route2);
+app.use("/donation", donationRoute);
 
-app.use("/", (request, response) => {
+// Default response for any route that is not defined
+app.use("*", (request, response) => {
     return response.status(404).json({
         message: "Cannot find any resource",
-        success: "false",
+        success: false,
     });
 });
 
-app.listen(port, () => {
-    console.log("Gracious Givers backend server started...")
-});
+// MongoDb connection
+mongoose.connect(url).then((result) => {
+    console.log('Connected to MongoDB database!');
+    app.listen(port);
+    console.log('Backend server started...');
+}).catch((error) => console.log(error));
