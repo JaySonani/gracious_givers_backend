@@ -37,3 +37,33 @@ exports.createFundraiser = async (request, response, next) => {
         response.status(500).json(errorResponse);
     }
 }
+
+
+exports.getFundraiser = async (request, response, next) => {
+
+    const fundraiserId = request.params.id;
+
+    Fundraiser.findById(fundraiserId)
+        .then(fundraiser => {
+            if (!fundraiser) {
+                const errorResponse = {
+                    message: "Fundraiser with id " + id + " not found",
+                    success: false,
+                }
+                response.status(404).send(errorResponse);
+            }
+            else { 
+                response.status(200).send(fundraiser); 
+            };
+        })
+        .catch(error => {
+            console.log("Error while retrieving fundraiser with ID :" + fundraiserId);
+            console.log(error);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            }
+            response.status(500).send(errorResponse);
+        });
+
+}

@@ -27,7 +27,10 @@ const storage = multer.diskStorage({
 const fundraiserController = require('../controllers/fundraiser');
 
 //add fundraiser
-router.post("/create", upload.single('image'), fundraiserController.createFundraiser)
+router.post("/create", upload.single('image'), fundraiserController.createFundraiser);
+
+// Get fundraiser details by id
+router.get("/:id", fundraiserController.getFundraiser);
 
 module.exports = router;
 
