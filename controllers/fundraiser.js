@@ -70,3 +70,43 @@ exports.getFundraiser = async (request, response, next) => {
         });
 
 }
+
+
+exports.getFundraiserByPeriod = async (request, response, next) => {
+
+    const period = request.params.period;
+    let condition;
+    if (period === 'past') {
+        condition = {status:{$in:["Completed", "Deactivated"]}}
+    }
+    else if (period === 'ongoing') {
+        condition = {status:'Active'}
+    }
+    else if (period === 'future') {
+        condition = {status:'Pending Admin Approval'}
+    }
+
+    Fundraiser.find(condition)
+        .then(fundraiser => {
+            if (!fundraiser) {
+                const errorResponse = {
+                    message: "Fundraiser with period " + period + " not found",
+                    success: false,
+                }
+                response.status(404).send(errorResponse);
+            }
+            else { 
+                response.status(200).send(fundraiser); 
+            };
+        })
+        .catch(error => {
+            console.log("Error while retrieving fundraiser with period :" + period);
+            console.log(error);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            }
+            response.status(500).send(errorResponse);
+        });
+
+}

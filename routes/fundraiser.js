@@ -32,5 +32,8 @@ router.post("/create", upload.single('image'), fundraiserController.createFundra
 // Get fundraiser details by id
 router.get("/:id", fundraiserController.getFundraiser);
 
+// Get fundraiser by period
+router.get("/period/:period", fundraiserController.getFundraiserByPeriod)
+
 module.exports = router;
 
