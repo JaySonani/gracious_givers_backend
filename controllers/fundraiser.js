@@ -6,12 +6,15 @@ exports.createFundraiser = async (request, response, next) => {
 
     let endDate = "";
     const initStatus = "Pending Admin Approval";
+    const createdBy = "Hardcoded Smile Foundation";
 
+    // Add bad request here if mandatory inputs are not sent from the UI
     const newFundraiser = new Fundraiser({
         _id: uuidv4(),
         title: request.body.title,
         description: request.body.description,
-        createdBy: request.body.createdBy,
+        ngoId: request.body.ngoId,
+        createdBy: createdBy,
         image: request.file.filename,
         goalAmount: request.body.goalAmount,
         amountRaised: 0,
@@ -19,6 +22,7 @@ exports.createFundraiser = async (request, response, next) => {
         donors: 0,
         cause: request.body.cause,
         status: initStatus,
+        activeDays: request.body.activeDays,
         endDate: endDate
     })
 
@@ -37,6 +41,7 @@ exports.createFundraiser = async (request, response, next) => {
             message: err,
             success: false,
         }
+        console.log("Error in creating fundraiser :" + err)
         response.status(500).json(errorResponse);
     }
 }
@@ -75,16 +80,28 @@ exports.getFundraiser = async (request, response, next) => {
 exports.getFundraiserByPeriod = async (request, response, next) => {
 
     const period = request.params.period;
-    let condition;
+    const ngoId = request.params.ngoId;
+    let condition = {
+        ngoId : ngoId
+    }
     if (period === 'past') {
-        condition = {status:{$in:["Completed", "Deactivated"]}}
+        condition.status = {$in:["Completed", "Deactivated"]}
     }
     else if (period === 'ongoing') {
-        condition = {status:'Active'}
+        condition.status = 'Active'
     }
     else if (period === 'future') {
-        condition = {status:'Pending Admin Approval'}
+        condition.status = 'Pending Admin Approval'
     }
+    else if ( !period || period === '' || !ngoId || ngoId === '' ) {
+        const errorResponse = {
+            message: "Required params period or ngoId missing",
+            success: false,
+        }
+        response.status(400).send(errorResponse);
+    }
+
+    console.log("Query Condition : " + condition.status + condition.ngoId);
 
     Fundraiser.find(condition)
         .then(fundraiser => {

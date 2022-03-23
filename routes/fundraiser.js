@@ -33,7 +33,7 @@ router.post("/create", upload.single('image'), fundraiserController.createFundra
 router.get("/:id", fundraiserController.getFundraiser);
 
 // Get fundraiser by period
-router.get("/period/:period", fundraiserController.getFundraiserByPeriod)
+router.get("/ngo/:ngoId/period/:period", fundraiserController.getFundraiserByPeriod)
 
 module.exports = router;
 

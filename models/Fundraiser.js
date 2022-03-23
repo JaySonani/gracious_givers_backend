@@ -11,6 +11,10 @@ const fundraiserSchema = new Schema({
         type: String,
         required: true
     },
+    ngoId: {
+        type: String,
+        required: true
+    },
     createdBy: {
         type: String,
         required: true
@@ -35,6 +39,10 @@ const fundraiserSchema = new Schema({
     },
     status: {
         type: String,
+        required: true
+    },
+    activeDays : {
+        type: Number,
         required: true
     },
     endDate: String,
