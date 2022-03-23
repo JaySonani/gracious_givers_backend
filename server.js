@@ -8,8 +8,16 @@ const port = process.env.PORT || 5000
 const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
 app.use(express.json())
 
+const cors = require('cors');
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET","POST","PUT","DELETE"],
+    credentials: true
+}));
+
 // Import all routes here
 const donationRoute = require("./routes/donation");
+const fundraiserRoute = require("./routes/fundraiser");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -18,6 +26,10 @@ app.get("/", (request, response) => {
 
 // Define all routes here
 app.use("/donation", donationRoute);
+app.use("/fundraiser", fundraiserRoute);
+
+const { static } = require('express');
+app.use('/images/', static('./uploads/fundraiser/image'));
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
