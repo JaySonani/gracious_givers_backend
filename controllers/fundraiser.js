@@ -22,11 +22,14 @@ exports.createFundraiser = async (request, response, next) => {
         endDate: endDate
     })
 
+    console.log("The id is " + newFundraiser.id);
+
     try {
         await newFundraiser.save();
         const successResponse = {
             message: 'Fundraiser added successfully',
             success: true,
+            data: newFundraiser
         }
         response.status(201).json(successResponse);
     } catch (err) {
