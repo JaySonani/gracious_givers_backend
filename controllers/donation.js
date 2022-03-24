@@ -8,7 +8,7 @@ exports.addDonation = async (request, response, next) => {
         donation_event_id: request.body.donation_event_id,
         donation_amount: request.body.donation_amount,
         donor_firstname: request.body.donor_firstname,
-        donor_lasttname: request.body.donor_lastname,
+        donor_lastname: request.body.donor_lastname,
         donor_email: request.body.donor_email
     })
 
