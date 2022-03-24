@@ -2,6 +2,14 @@ const Fundraiser = require('../models/Fundraiser')
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid')
 
+const fundraiserStatus = {
+    draft:'Draft', 
+    active: 'Active', 
+    deactivated: 'Deactivated', 
+    completed: 'Completed', 
+    pendingApproval: 'Pending Admin Approval'
+}
+
 exports.createFundraiser = async (request, response, next) => {
 
     let endDate = "";
@@ -46,11 +54,9 @@ exports.createFundraiser = async (request, response, next) => {
     }
 }
 
-
 exports.getFundraiser = async (request, response, next) => {
 
     const fundraiserId = request.params.id;
-
     Fundraiser.findById(fundraiserId)
         .then(fundraiser => {
             if (!fundraiser) {
@@ -246,4 +252,75 @@ exports.updateImage = async (request, response, next) => {
                 }
             }
         })
+}
+
+exports.updateStatus = async (request, response, next) => {
+    const fundraiserId = request.params.id;
+    const newStatusValue = request.params.status;
+    const date = require('date-and-time');
+    const invalidStatusChange = {
+        message: "Cannot update the fundrasier with status " + newStatusValue,
+        success: false,
+    }
+
+    if (fundraiserStatus.active === newStatusValue) {
+        Fundraiser.findById(fundraiserId)
+        .then(fundraiser => {
+            if (!fundraiser) {
+                const errorResponse = {
+                    message: "Fundraiser with id " + fundraiserId + " not found",
+                    success: false,
+                }
+                response.status(404).send(errorResponse);
+            }
+            else if (fundraiser.status !== fundraiserStatus.pendingApproval) {
+                
+                response.status(400).send(invalidStatusChange);
+            }
+            else {
+                const now = new Date();
+                console.log("Active days is :" + fundraiser.activeDays)
+                const endDate = new Date(date.addDays(now, fundraiser.activeDays));
+                const endDateString = date.format(endDate,'YYYY-MM-DD');
+                console.log(endDateString)
+                const updatedFundraiser = new Fundraiser({
+                    status: newStatusValue,
+                    endDate: endDateString
+                })
+                Fundraiser.findByIdAndUpdate(
+                    fundraiserId, updatedFundraiser, (error, fundraiser) => {
+                        if (error) {
+                            console.log("Fundraiser : "+fundraiser);
+                            const errorResponse = {
+                                message: "Internal error occured at the server",
+                                success: false,
+                            }
+                            response.status(500).send(errorResponse);
+                        } 
+                        else 
+                        {                            
+                            const successResponse = {
+                                message: "Fundraiser status updated successfully",
+                                success: true
+                            }
+                            response.status(200).send(successResponse);                            
+                        }
+                    }
+                )   
+            };
+        })
+        .catch(error => {
+            console.log("Error while retrieving fundraiser with ID :" + fundraiserId);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            }
+            response.status(500).send(errorResponse);
+        });  
+    }
+    else 
+    {
+        response.status(400).send(invalidStatusChange);
+    }
+    
 }

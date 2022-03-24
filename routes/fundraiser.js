@@ -41,6 +41,8 @@ router.put("/:id/ngo/:ngoId", fundraiserController.updateFundraiser);
 // Update image for fundraiser
 router.put("/:id/image", upload.single('image'), fundraiserController.updateImage);
 
+router.put("/:id/status/:status", fundraiserController.updateStatus)
+
 router.delete("/:id/ngo/:ngoId", fundraiserController.deleteFundraiser);
 
 module.exports = router;
