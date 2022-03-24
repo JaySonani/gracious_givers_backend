@@ -76,7 +76,6 @@ exports.getFundraiser = async (request, response, next) => {
 
 }
 
-
 exports.getFundraiserByPeriod = async (request, response, next) => {
 
     const period = request.params.period;
@@ -101,8 +100,6 @@ exports.getFundraiserByPeriod = async (request, response, next) => {
         response.status(400).send(errorResponse);
     }
 
-    console.log("Query Condition : " + condition.status + condition.ngoId);
-
     Fundraiser.find(condition)
         .then(fundraiser => {
             if (!fundraiser) {
@@ -126,4 +123,127 @@ exports.getFundraiserByPeriod = async (request, response, next) => {
             response.status(500).send(errorResponse);
         });
 
+}
+
+exports.updateFundraiser = async (request, response, next) => {
+
+    const ngoId = request.params.ngoId;
+    const fundraiserId = request.params.id;
+    const fundraiser = new Fundraiser({
+        title: request.body.title,
+        description: request.body.description,
+        ngoId: request.body.ngoId,
+        image: request.body.image,
+        goalAmount: request.body.goalAmount,
+        cause: request.body.cause,
+        activeDays: request.body.activeDays,
+    })
+
+    Fundraiser.findOneAndUpdate(
+        {_id:fundraiserId, ngoId:ngoId}, fundraiser, (error, fundraiser) => {
+            if (error) {
+                console.log("Fundraiser : "+fundraiser);
+                const errorResponse = {
+                    message: "Internal error occured at the server",
+                    success: false,
+                }
+                response.status(500).send(errorResponse);
+            } 
+            else 
+            {
+                if (!fundraiser) {
+                    const errorResponse = {
+                        message: "Fundraiser not found",
+                        success: false,
+                    }
+                    response.status(404).send(errorResponse);
+                }
+                else
+                {
+                    const successResponse = {
+                        message: "Fundraiser updated successfully",
+                        success: true,
+                        data: fundraiser
+                    }
+                    response.status(200).send(successResponse);
+                }
+            }
+        })
+}
+
+exports.deleteFundraiser = async (request, response, next) => {
+
+    const ngoId = request.params.ngoId;
+    const fundraiserId = request.params.id;
+
+    Fundraiser.findOneAndDelete(
+        {_id:fundraiserId, ngoId:ngoId}, (error, fundraiser) => {
+            if (error) {
+                const errorResponse = {
+                    message: "Internal error occured at the server",
+                    success: false,
+                }
+                response.status(500).send(errorResponse);
+            } 
+            else 
+            {
+                if (!fundraiser) {
+                    const errorResponse = {
+                        message: "Fundraiser not found",
+                        success: false,
+                    }
+                    response.status(404).send(errorResponse);
+                }
+                else
+                {
+                    const successResponse = {
+                        message: "Fundraiser deleted successfully",
+                        success: true
+                    }
+                    response.status(200).send(successResponse);
+                }
+            }
+        })
+}
+
+exports.updateImage = async (request, response, next) => {
+
+    if (!request.file) {
+        response.status(400).send("No image provided for update request");
+    }
+    const fileName = request.file.filename;
+    const fundraiser = new Fundraiser({
+        image: fileName
+    })
+
+    const fundraiserId = request.params.id;
+
+    Fundraiser.findOneAndUpdate(
+        {_id:fundraiserId}, fundraiser, (error, fundraiser) => {
+            if (error) {
+                const errorResponse = {
+                    message: "Internal error occured at the server",
+                    success: false,
+                }
+                response.status(500).send(errorResponse);
+            } 
+            else 
+            {
+                if (!fundraiser) {
+                    const errorResponse = {
+                        message: "Fundraiser not found",
+                        success: false,
+                    }
+                    response.status(404).send(errorResponse);
+                }
+                else
+                {
+                    const successResponse = {
+                        message: "Fundraiser image updated successfully",
+                        success: true
+                    }
+                    response.status(200).send(successResponse);
+                }
+            }
+        })
 }
