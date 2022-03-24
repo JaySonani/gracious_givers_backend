@@ -7,7 +7,7 @@ const donationSchema = new Schema(
         donation_event_id: { type: String, required: true },
         donation_amount: { type: String, required: true },
         donor_firstname: { type: String, required: true },
-        donor_lasttname: { type: String, required: true },
+        donor_lastname: { type: String, required: true },
         donor_email: { type: String, required: true }
     },
     { timestamps: true }
