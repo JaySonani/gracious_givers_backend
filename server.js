@@ -1,12 +1,15 @@
 // Importing modules
-const express = require('express')
+const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Configuring server
 const app = express()
 const port = process.env.PORT || 5000
 const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
 app.use(express.json())
+
+app.use(cors())
 
 // Import all routes here
 const donationRoute = require("./routes/donation");
