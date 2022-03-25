@@ -29,6 +29,9 @@ const fundraiserController = require('../controllers/fundraiser');
 //add fundraiser
 router.post("/", upload.single('image'), fundraiserController.createFundraiser);
 
+// Get all fundraisers
+router.get("/pending", fundraiserController.getPendingFundraisers);
+
 // Get fundraiser details by id
 router.get("/:id", fundraiserController.getFundraiser);
 
