@@ -24,9 +24,6 @@ app.get("/", (request, response) => {
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
 
-const { static } = require('express');
-app.use('/images/', static('./uploads/fundraiser/image'));
-
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
     return response.status(404).json({
