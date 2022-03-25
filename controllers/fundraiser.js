@@ -1,5 +1,4 @@
 const Fundraiser = require('../models/Fundraiser')
-const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid')
 
 const fundraiserStatus = {
@@ -23,7 +22,8 @@ exports.createFundraiser = async (request, response, next) => {
         description: request.body.description,
         ngoId: request.body.ngoId,
         createdBy: createdBy,
-        image: request.file.filename,
+        image: request.body.image,
+        imageName: request.body.imageName,
         goalAmount: request.body.goalAmount,
         amountRaised: 0,
         currency: request.body.currency,
@@ -197,8 +197,8 @@ exports.updateFundraiser = async (request, response, next) => {
     const fundraiser = new Fundraiser({
         title: request.body.title,
         description: request.body.description,
-        ngoId: request.body.ngoId,
         image: request.body.image,
+        imageName: request.body.imageName,
         goalAmount: request.body.goalAmount,
         cause: request.body.cause,
         activeDays: request.body.activeDays,
@@ -263,48 +263,6 @@ exports.deleteFundraiser = async (request, response, next) => {
                 {
                     const successResponse = {
                         message: "Fundraiser deleted successfully",
-                        success: true
-                    }
-                    response.status(200).send(successResponse);
-                }
-            }
-        })
-}
-
-exports.updateImage = async (request, response, next) => {
-
-    if (!request.file) {
-        response.status(400).send("No image provided for update request");
-    }
-    const fileName = request.file.filename;
-    const fundraiser = new Fundraiser({
-        image: fileName
-    })
-
-    const fundraiserId = request.params.id;
-
-    Fundraiser.findOneAndUpdate(
-        {_id:fundraiserId}, fundraiser, (error, fundraiser) => {
-            if (error) {
-                const errorResponse = {
-                    message: "Internal error occured at the server",
-                    success: false,
-                }
-                response.status(500).send(errorResponse);
-            } 
-            else 
-            {
-                if (!fundraiser) {
-                    const errorResponse = {
-                        message: "Fundraiser not found",
-                        success: false,
-                    }
-                    response.status(404).send(errorResponse);
-                }
-                else
-                {
-                    const successResponse = {
-                        message: "Fundraiser image updated successfully",
                         success: true
                     }
                     response.status(200).send(successResponse);

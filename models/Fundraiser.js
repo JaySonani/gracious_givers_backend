@@ -23,6 +23,10 @@ const fundraiserSchema = new Schema({
         type: String,
         required: true
     },
+    imageName: {
+        type: String,
+        required: true
+    },
     goalAmount: {
         type: Number,
         required: true
