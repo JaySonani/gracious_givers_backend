@@ -52,6 +52,35 @@ exports.createFundraiser = async (request, response, next) => {
     }
 }
 
+exports.getPendingFundraisers = async (request, response, next) => {
+    let condition = {
+        status: "Pending Admin Approval",
+    };
+    Fundraiser.find(condition)
+        .then((fundraisers) => {
+            if (!fundraisers) {
+                const errorResponse = {
+                    message: fundraiserStatus.pendingApproval,
+                    success: false,
+                };
+                response.status(404).send(errorResponse);
+            } else {
+                response.status(200).send(fundraisers);
+            }
+        })
+        .catch((error) => {
+            console.log(
+                "Error while retrieving pendin fundraisers"
+            );
+            console.log(error);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            };
+            response.status(500).send(errorResponse);
+        });
+};
+
 exports.getFundraiser = async (request, response, next) => {
 
     const fundraiserId = request.params.id;
