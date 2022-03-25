@@ -27,13 +27,16 @@ const storage = multer.diskStorage({
 const fundraiserController = require('../controllers/fundraiser');
 
 //add fundraiser
-router.post("/create", upload.single('image'), fundraiserController.createFundraiser);
+router.post("/", upload.single('image'), fundraiserController.createFundraiser);
 
 // Get fundraiser details by id
 router.get("/:id", fundraiserController.getFundraiser);
 
 // Get fundraiser by period
 router.get("/ngo/:ngoId/period/:period", fundraiserController.getFundraiserByPeriod);
+
+// Get fundraiser by cause
+router.get("/cause/:cause", fundraiserController.getFundraiserByCause);
 
 // Update fundraiser 
 router.put("/:id/ngo/:ngoId", fundraiserController.updateFundraiser);

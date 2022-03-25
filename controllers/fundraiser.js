@@ -13,7 +13,7 @@ const fundraiserStatus = {
 exports.createFundraiser = async (request, response, next) => {
 
     let endDate = "";
-    const initStatus = "Pending Admin Approval";
+    const initStatus = fundraiserStatus.pendingApproval;
     const createdBy = "Hardcoded Smile Foundation";
 
     // Add bad request here if mandatory inputs are not sent from the UI
@@ -33,8 +33,6 @@ exports.createFundraiser = async (request, response, next) => {
         activeDays: request.body.activeDays,
         endDate: endDate
     })
-
-    console.log("The id is " + newFundraiser.id);
 
     try {
         await newFundraiser.save();
@@ -72,7 +70,6 @@ exports.getFundraiser = async (request, response, next) => {
         })
         .catch(error => {
             console.log("Error while retrieving fundraiser with ID :" + fundraiserId);
-            console.log(error);
             const errorResponse = {
                 message: "Internal error occured at the server",
                 success: false,
@@ -93,10 +90,10 @@ exports.getFundraiserByPeriod = async (request, response, next) => {
         condition.status = {$in:["Completed", "Deactivated"]}
     }
     else if (period === 'ongoing') {
-        condition.status = 'Active'
+        condition.status = fundraiserStatus.active
     }
     else if (period === 'future') {
-        condition.status = 'Pending Admin Approval'
+        condition.status = fundraiserStatus.pendingApproval
     }
     else if ( !period || period === '' || !ngoId || ngoId === '' ) {
         const errorResponse = {
@@ -121,6 +118,39 @@ exports.getFundraiserByPeriod = async (request, response, next) => {
         })
         .catch(error => {
             console.log("Error while retrieving fundraiser with period :" + period);
+            console.log(error);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            }
+            response.status(500).send(errorResponse);
+        });
+
+}
+
+exports.getFundraiserByCause = async (request, response, next) => {
+
+    const cause = request.params.cause;
+    if ( !cause ) {
+        const errorResponse = {
+            message: "Required params cause is missing",
+            success: false,
+        }
+        response.status(400).send(errorResponse);
+    }
+    let condition = {
+        status : fundraiserStatus.active,
+    }
+    if ( cause !== 'All' ) {
+        condition.cause = cause;
+    }
+
+    Fundraiser.find(condition)
+        .then(fundraiser => {
+            response.status(200).send(fundraiser);
+        })
+        .catch(error => {
+            console.log("Error while retrieving fundraiser with cause :" + cause);
             console.log(error);
             const errorResponse = {
                 message: "Internal error occured at the server",
@@ -254,6 +284,11 @@ exports.updateImage = async (request, response, next) => {
         })
 }
 
+const serverErrorResponse = {
+    message: "Internal error occured at the server",
+    success: false,
+}
+
 exports.updateStatus = async (request, response, next) => {
     const fundraiserId = request.params.id;
     const newStatusValue = request.params.status;
@@ -263,7 +298,8 @@ exports.updateStatus = async (request, response, next) => {
         success: false,
     }
 
-    if (fundraiserStatus.active === newStatusValue) {
+    if (fundraiserStatus.active === newStatusValue || 
+        fundraiserStatus.deactivated === newStatusValue) {
         Fundraiser.findById(fundraiserId)
         .then(fundraiser => {
             if (!fundraiser) {
@@ -273,16 +309,16 @@ exports.updateStatus = async (request, response, next) => {
                 }
                 response.status(404).send(errorResponse);
             }
-            else if (fundraiser.status !== fundraiserStatus.pendingApproval) {
-                
-                response.status(400).send(invalidStatusChange);
-            }
             else {
-                const now = new Date();
-                console.log("Active days is :" + fundraiser.activeDays)
-                const endDate = new Date(date.addDays(now, fundraiser.activeDays));
-                const endDateString = date.format(endDate,'YYYY-MM-DD');
-                console.log(endDateString)
+                let endDateString = null;
+                if (newStatusValue == fundraiserStatus.status) {
+                    const now = new Date();
+                    const endDate = new Date(date.addDays(now, fundraiser.activeDays));
+                    endDateString = date.format(endDate,'YYYY-MM-DD');
+                }
+                else if (newStatusValue == fundraiserStatus.deactivated) {                 
+                    endDateString = date.format(new Date(),'YYYY-MM-DD');
+                }
                 const updatedFundraiser = new Fundraiser({
                     status: newStatusValue,
                     endDate: endDateString
@@ -290,12 +326,7 @@ exports.updateStatus = async (request, response, next) => {
                 Fundraiser.findByIdAndUpdate(
                     fundraiserId, updatedFundraiser, (error, fundraiser) => {
                         if (error) {
-                            console.log("Fundraiser : "+fundraiser);
-                            const errorResponse = {
-                                message: "Internal error occured at the server",
-                                success: false,
-                            }
-                            response.status(500).send(errorResponse);
+                            response.status(500).send(serverErrorResponse);
                         } 
                         else 
                         {                            
@@ -311,11 +342,7 @@ exports.updateStatus = async (request, response, next) => {
         })
         .catch(error => {
             console.log("Error while retrieving fundraiser with ID :" + fundraiserId);
-            const errorResponse = {
-                message: "Internal error occured at the server",
-                success: false,
-            }
-            response.status(500).send(errorResponse);
+            response.status(500).send(serverErrorResponse);
         });  
     }
     else 
