@@ -14,6 +14,7 @@ app.use(cors())
 // Import all routes here
 const donationRoute = require("./routes/donation");
 const fundraiserRoute = require("./routes/fundraiser");
+const authorizationRoute = require("./routes/authorizationRoute");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -23,6 +24,10 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
+
+const { static } = require("express");
+app.use("/images/", static("./uploads/fundraiser/image"));
+app.use("/", authorizationRoute);
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
@@ -36,5 +41,6 @@ app.use("*", (request, response) => {
 mongoose.connect(url).then((result) => {
     console.log('Connected to MongoDB database!');
     app.listen(port);
-    console.log('Backend server started...');
-}).catch((error) => console.log(error));
+    console.log(`Backend server started...and running on ${port}`);
+  })
+  .catch((error) => console.log(error));
