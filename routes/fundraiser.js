@@ -8,7 +8,10 @@ const fundraiserController = require('../controllers/fundraiser');
 // router.post("/", upload.single('image'), fundraiserController.createFundraiser);
 router.post("/", fundraiserController.createFundraiser);
 
-// Get all fundraisers
+// Get all pending fundraisers
+router.get("/", fundraiserController.getAllFundraisers);
+
+// Get all pending fundraisers
 router.get("/pending", fundraiserController.getPendingFundraisers);
 
 // Get fundraiser details by id
