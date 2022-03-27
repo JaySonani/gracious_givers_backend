@@ -1,4 +1,5 @@
 const Fundraiser = require('../models/Fundraiser')
+const User = require("../models/User");
 const { v4: uuidv4 } = require('uuid')
 
 const fundraiserStatus = {
@@ -11,44 +12,54 @@ const fundraiserStatus = {
 
 exports.createFundraiser = async (request, response, next) => {
 
-    let endDate = "";
     const initStatus = fundraiserStatus.pendingApproval;
-    const createdBy = "Hardcoded Smile Foundation";
-
-    // Add bad request here if mandatory inputs are not sent from the UI
-    const newFundraiser = new Fundraiser({
-        _id: uuidv4(),
-        title: request.body.title,
-        description: request.body.description,
-        ngoId: request.body.ngoId,
-        createdBy: createdBy,
-        image: request.body.image,
-        imageName: request.body.imageName,
-        goalAmount: request.body.goalAmount,
-        amountRaised: 0,
-        currency: request.body.currency,
-        donors: 0,
-        cause: request.body.cause,
-        status: initStatus,
-        activeDays: request.body.activeDays,
-        endDate: endDate
-    })
-
+    const fundraiser = request.body;
+    var ObjectId = require('mongodb').ObjectId;
+    const ngoId = fundraiser.ngoId;
     try {
-        await newFundraiser.save();
-        const successResponse = {
-            message: 'Fundraiser added successfully',
-            success: true,
-            data: newFundraiser
+        const ngoUser = await User.findOne({ _id: ObjectId(ngoId) });
+        if (!ngoUser) {
+            response.status(400).send("You must be logged to create a Fundraiser");
         }
-        response.status(201).json(successResponse);
-    } catch (err) {
-        const errorResponse = {
-            message: err,
-            success: false,
+        else {
+            const newFundraiser = new Fundraiser({
+                _id: uuidv4(),
+                title: fundraiser.title,
+                description: fundraiser.description,
+                ngoId: fundraiser.ngoId,
+                createdBy: ngoUser.ngo_name,
+                image: fundraiser.image,
+                imageName: fundraiser.imageName,
+                goalAmount: fundraiser.goalAmount,
+                amountRaised: 0,
+                currency: fundraiser.currency,
+                donors: 0,
+                cause: fundraiser.cause,
+                status: initStatus,
+                activeDays: fundraiser.activeDays,
+                endDate: ""
+            })
+
+            try {
+                await newFundraiser.save();
+                const successResponse = {
+                    message: 'Fundraiser added successfully',
+                    success: true,
+                    data: newFundraiser
+                }
+                response.status(201).json(successResponse);
+            } catch (err) {
+                const errorResponse = {
+                    message: err,
+                    success: false,
+                }
+                console.log("Error in creating fundraiser :" + err)
+                response.status(500).json(errorResponse);
+            }
         }
-        console.log("Error in creating fundraiser :" + err)
-        response.status(500).json(errorResponse);
+    }
+    catch (error) {
+        response.status(400).send("You must be logged to create a Fundraiser");
     }
 }
 
