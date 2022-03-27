@@ -27,3 +27,28 @@ exports.addDonation = async (request, response, next) => {
         response.status(500).json(errorResponse);
     }
 }
+
+
+exports.allDonations = async (request, response, next) => {
+
+    try {
+        const allDonations = await Donation.find();
+
+        const successResponse = {
+            message: 'Donation retrieved successfully',
+            success: true,
+            donations: allDonations,
+        }
+        response.status(200).json(successResponse);
+    } catch (err) {
+        const errorResponse = {
+            message: err,
+            success: false,
+        }
+        response.status(500).json(errorResponse);
+    }
+
+
+
+
+}

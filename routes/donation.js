@@ -5,7 +5,10 @@ const router = express.Router();
 const donationController = require('../controllers/donation');
 
 //add donation
-router.post("/addDonation", donationController.addDonation)
+router.post("/addDonation", donationController.addDonation);
+
+//get all donation
+router.get("/alldonations", donationController.allDonations);
 
 module.exports = router;
 

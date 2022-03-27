@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const AdminUser = require("../models/AdminUser");
 exports.register = async (request, response) => {
-  const { user_id, password, ngo_name, target_group, email } = request.body;
+  const { user_id, password, ngo_name, target_group, email, description } = request.body;
 
   //encrypt password
   const salt = await bcrypt.genSalt(10);
@@ -15,6 +15,8 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
+    description,
+    status: "Pending Admin Approval",
   });
 
   try {
