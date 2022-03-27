@@ -8,6 +8,7 @@ const userSchema = new Schema(
     email: { type: String, required: true, trim: true },
     ngo_name: { type: String, required: true, trim: true },
     target_group: { type: String, required: true, trim: true },
+    status: { type: String, required: true, trim: true },
   },
   { timestamps: true }
 );

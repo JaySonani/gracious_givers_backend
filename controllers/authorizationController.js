@@ -15,6 +15,7 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
+    status: "Pending Admin Approval",
   });
 
   try {
