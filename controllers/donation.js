@@ -1,4 +1,5 @@
 const Donation = require('../models/Donation')
+const Fundraiser = require('../models/Fundraiser')
 const { v4: uuidv4 } = require('uuid')
 
 exports.addDonation = async (request, response, next) => {
@@ -15,6 +16,11 @@ exports.addDonation = async (request, response, next) => {
 
     try {
         await newDonation.save();
+
+        const temp = await Fundraiser.findOne({ _id: request.body.donation_event_id });
+        temp.amountRaised = parseInt(temp.amountRaised) + parseInt(request.body.donation_amount);
+        temp.save();
+
         const successResponse = {
             message: 'Donation added successfully',
             success: true,
