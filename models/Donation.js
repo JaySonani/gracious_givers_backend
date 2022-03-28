@@ -1,3 +1,5 @@
+// Author: Jay Bhagvanbhai Sonani (B00891984)
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

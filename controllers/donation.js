@@ -1,3 +1,5 @@
+// Author: Jay Bhagvanbhai Sonani (B00891984)
+
 const Donation = require('../models/Donation')
 const Fundraiser = require('../models/Fundraiser')
 const { v4: uuidv4 } = require('uuid')
