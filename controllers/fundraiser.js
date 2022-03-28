@@ -287,7 +287,7 @@ const serverErrorResponse = {
     success: false,
 }
 
-exports.updateStatus = async (request, response, next) => {
+exports.updateStatus = async (request, response, next) => {    
     const fundraiserId = request.params.id;
     const newStatusValue = request.params.status;
     const date = require('date-and-time');
@@ -295,7 +295,6 @@ exports.updateStatus = async (request, response, next) => {
         message: "Cannot update the fundrasier with status " + newStatusValue,
         success: false,
     }
-
     if (fundraiserStatus.active === newStatusValue || 
         fundraiserStatus.deactivated === newStatusValue) {
         Fundraiser.findById(fundraiserId)
@@ -309,10 +308,10 @@ exports.updateStatus = async (request, response, next) => {
             }
             else {
                 let endDateString = null;
-                if (newStatusValue == fundraiserStatus.status) {
-                    const now = new Date();
-                    const endDate = new Date(date.addDays(now, fundraiser.activeDays));
-                    endDateString = date.format(endDate,'YYYY-MM-DD');
+                if (newStatusValue == fundraiserStatus.active) {
+                    let now = new Date();
+                    let endDate = new Date(date.addDays(now, fundraiser.activeDays));
+                    endDateString = date.format(endDate,'YYYY-MM-DD');                   
                 }
                 else if (newStatusValue == fundraiserStatus.deactivated) {                 
                     endDateString = date.format(new Date(),'YYYY-MM-DD');
@@ -321,6 +320,7 @@ exports.updateStatus = async (request, response, next) => {
                     status: newStatusValue,
                     endDate: endDateString
                 })
+                
                 Fundraiser.findByIdAndUpdate(
                     fundraiserId, updatedFundraiser, (error, fundraiser) => {
                         if (error) {
