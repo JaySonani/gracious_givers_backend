@@ -15,7 +15,7 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
-    description: "Details", //meant to be removed
+    description,
     status: "Pending Admin Approval",
   });
 
@@ -108,9 +108,7 @@ exports.loginAdmin = async (request, response) => {
       };
       return response.status(401).json(errorResponse);
     }
-    // delete user.password;
-    //user = user.toJSON();
-    //console.log(user);
+
     return response.status(200).json({
       message: "User logged in successfully",
       success: true,
