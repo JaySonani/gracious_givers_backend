@@ -30,7 +30,7 @@ app.use("/ngo", ngoRoute);
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));
-app.use("/", authorizationRoute);
+// app.use("/", authorizationRoute);
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
@@ -45,5 +45,5 @@ mongoose.connect(url).then((result) => {
     console.log('Connected to MongoDB database!');
     app.listen(port);
     console.log(`Backend server started...and running on ${port}`);
-  })
-  .catch((error) => console.log(error));
+})
+    .catch((error) => console.log(error));
