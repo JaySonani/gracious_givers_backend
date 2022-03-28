@@ -15,6 +15,7 @@ app.use(cors())
 const donationRoute = require("./routes/donation");
 const fundraiserRoute = require("./routes/fundraiser");
 const authorizationRoute = require("./routes/authorizationRoute");
+const ngoRoute = require("./routes/ngo");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -24,6 +25,8 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
+
+app.use("/ngo", ngoRoute);
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));
