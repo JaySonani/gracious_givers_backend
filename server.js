@@ -25,12 +25,12 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
+app.use("/auth", authorizationRoute);
 
 app.use("/ngo", ngoRoute);
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));
-// app.use("/", authorizationRoute);
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
