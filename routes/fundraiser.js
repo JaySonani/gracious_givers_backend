@@ -9,9 +9,6 @@ const fundraiserController = require('../controllers/fundraiser');
 router.post("/", fundraiserController.createFundraiser);
 
 // Get all pending fundraisers
-router.get("/", fundraiserController.getAllFundraisers);
-
-// Get all pending fundraisers
 router.get("/pending", fundraiserController.getPendingFundraisers);
 
 // Get fundraiser details by id
