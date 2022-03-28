@@ -9,4 +9,7 @@ ngo.get("/pending", ngoController.getPendingNGOs);
 //get all active ngo details
 ngo.get("/active", ngoController.getActiveNGOs);
 
+// Get ngo details by id
+ngo.get("/:id", ngoController.getNgo);
+
 module.exports = ngo;

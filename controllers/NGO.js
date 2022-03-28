@@ -5,7 +5,7 @@ const AdminUser = require("../models/AdminUser");
 
 exports.getPendingNGOs = async (request, response, next) => {
     let condition = {
-        status: "Pending Admin Approval"
+        status: "Pending Admin Approval",
     };
     User.find(condition)
         .then((ngo) => {
@@ -20,9 +20,7 @@ exports.getPendingNGOs = async (request, response, next) => {
             }
         })
         .catch((error) => {
-            console.log(
-                "Error while retrieving pending NGOs"
-            );
+            console.log("Error while retrieving pending NGOs");
             console.log(error);
             const errorResponse = {
                 message: "Internal error occured at the server",
@@ -34,7 +32,7 @@ exports.getPendingNGOs = async (request, response, next) => {
 
 exports.getActiveNGOs = async (request, response, next) => {
     let condition = {
-        status: "Active"
+        status: "Active",
     };
     User.find(condition)
         .then((ngo) => {
@@ -49,9 +47,7 @@ exports.getActiveNGOs = async (request, response, next) => {
             }
         })
         .catch((error) => {
-            console.log(
-                "Error while retrieving active NGOs"
-            );
+            console.log("Error while retrieving active NGOs");
             console.log(error);
             const errorResponse = {
                 message: "Internal error occured at the server",
@@ -61,3 +57,26 @@ exports.getActiveNGOs = async (request, response, next) => {
         });
 };
 
+exports.getNgo = async (request, response, next) => {
+    const ngoId = request.params.id;
+    User.findById(ngoId)
+        .then((ngo) => {
+            if (!ngo) {
+                const errorResponse = {
+                    message: "Ngo with id: " + id + " not found",
+                    success: false,
+                };
+                response.status(404).send(errorResponse);
+            } else {
+                response.status(200).send(ngo);
+            }
+        })
+        .catch((error) => {
+            console.log("Error while retrieving ngo with ID :" + ngoId);
+            const errorResponse = {
+                message: "Internal error occured at the server",
+                success: false,
+            };
+            response.status(500).send(errorResponse);
+        });
+};
