@@ -25,7 +25,7 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
-app.use("/notification", notificationRoute);
+app.use("/getNotification", notificationRoute);
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));

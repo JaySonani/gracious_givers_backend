@@ -5,6 +5,6 @@ const router = express.Router();
 const notificationController = require('../controllers/notification');
 
 //Get Notification
-router.get("/getNotification", notificationController.getNotification);
+router.get("/getAdminNotification", notificationController.getNotification);
 
 module.exports = router;
