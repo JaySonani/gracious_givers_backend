@@ -1,3 +1,6 @@
+/*
+    Author: Jay Nimeshkumar Patel (B00885078)
+*/
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
