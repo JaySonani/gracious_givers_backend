@@ -1,3 +1,5 @@
+// Author: Akanksha Singh (B00892887)
+
 const Fundraiser = require('../models/Fundraiser')
 const User = require("../models/User");
 const { v4: uuidv4 } = require('uuid')
