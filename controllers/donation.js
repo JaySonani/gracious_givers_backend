@@ -21,6 +21,7 @@ exports.addDonation = async (request, response, next) => {
 
         const temp = await Fundraiser.findOne({ _id: request.body.donation_event_id });
         temp.amountRaised = parseInt(temp.amountRaised) + parseInt(request.body.donation_amount);
+        temp.donors += 1;
         temp.save();
 
         const successResponse = {
