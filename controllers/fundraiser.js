@@ -1,4 +1,7 @@
+// Author: Akanksha Singh (B00892887)
+
 const Fundraiser = require('../models/Fundraiser')
+const User = require("../models/User");
 const { v4: uuidv4 } = require('uuid')
 
 const fundraiserStatus = {
@@ -11,50 +14,60 @@ const fundraiserStatus = {
 
 exports.createFundraiser = async (request, response, next) => {
 
-    let endDate = "";
     const initStatus = fundraiserStatus.pendingApproval;
-    const createdBy = "Hardcoded Smile Foundation";
-
-    // Add bad request here if mandatory inputs are not sent from the UI
-    const newFundraiser = new Fundraiser({
-        _id: uuidv4(),
-        title: request.body.title,
-        description: request.body.description,
-        ngoId: request.body.ngoId,
-        createdBy: createdBy,
-        image: request.body.image,
-        imageName: request.body.imageName,
-        goalAmount: request.body.goalAmount,
-        amountRaised: 0,
-        currency: request.body.currency,
-        donors: 0,
-        cause: request.body.cause,
-        status: initStatus,
-        activeDays: request.body.activeDays,
-        endDate: endDate
-    })
-
+    const fundraiser = request.body;
+    var ObjectId = require('mongodb').ObjectId;
+    const ngoId = fundraiser.ngoId;
     try {
-        await newFundraiser.save();
-        const successResponse = {
-            message: 'Fundraiser added successfully',
-            success: true,
-            data: newFundraiser
+        const ngoUser = await User.findOne({ _id: ObjectId(ngoId) });
+        if (!ngoUser) {
+            response.status(400).send("You must be logged to create a Fundraiser");
         }
-        response.status(201).json(successResponse);
-    } catch (err) {
-        const errorResponse = {
-            message: err,
-            success: false,
+        else {
+            const newFundraiser = new Fundraiser({
+                _id: uuidv4(),
+                title: fundraiser.title,
+                description: fundraiser.description,
+                ngoId: fundraiser.ngoId,
+                createdBy: ngoUser.ngo_name,
+                image: fundraiser.image,
+                imageName: fundraiser.imageName,
+                goalAmount: fundraiser.goalAmount,
+                amountRaised: 0,
+                currency: fundraiser.currency,
+                donors: 0,
+                cause: fundraiser.cause,
+                status: initStatus,
+                activeDays: fundraiser.activeDays,
+                endDate: ""
+            })
+
+            try {
+                await newFundraiser.save();
+                const successResponse = {
+                    message: 'Fundraiser added successfully',
+                    success: true,
+                    data: newFundraiser
+                }
+                response.status(201).json(successResponse);
+            } catch (err) {
+                const errorResponse = {
+                    message: err,
+                    success: false,
+                }
+                console.log("Error in creating fundraiser :" + err)
+                response.status(500).json(errorResponse);
+            }
         }
-        console.log("Error in creating fundraiser :" + err)
-        response.status(500).json(errorResponse);
+    }
+    catch (error) {
+        response.status(400).send("You must be logged to create a Fundraiser");
     }
 }
 
 exports.getPendingFundraisers = async (request, response, next) => {
     let condition = {
-        status: "Pending Admin Approval",
+        status: "Pending Admin Approval"
     };
     Fundraiser.find(condition)
         .then((fundraisers) => {
@@ -70,7 +83,7 @@ exports.getPendingFundraisers = async (request, response, next) => {
         })
         .catch((error) => {
             console.log(
-                "Error while retrieving pendin fundraisers"
+                "Error while retrieving pending fundraisers"
             );
             console.log(error);
             const errorResponse = {
@@ -276,7 +289,7 @@ const serverErrorResponse = {
     success: false,
 }
 
-exports.updateStatus = async (request, response, next) => {
+exports.updateStatus = async (request, response, next) => {    
     const fundraiserId = request.params.id;
     const newStatusValue = request.params.status;
     const date = require('date-and-time');
@@ -284,7 +297,6 @@ exports.updateStatus = async (request, response, next) => {
         message: "Cannot update the fundrasier with status " + newStatusValue,
         success: false,
     }
-
     if (fundraiserStatus.active === newStatusValue || 
         fundraiserStatus.deactivated === newStatusValue) {
         Fundraiser.findById(fundraiserId)
@@ -298,10 +310,10 @@ exports.updateStatus = async (request, response, next) => {
             }
             else {
                 let endDateString = null;
-                if (newStatusValue == fundraiserStatus.status) {
-                    const now = new Date();
-                    const endDate = new Date(date.addDays(now, fundraiser.activeDays));
-                    endDateString = date.format(endDate,'YYYY-MM-DD');
+                if (newStatusValue == fundraiserStatus.active) {
+                    let now = new Date();
+                    let endDate = new Date(date.addDays(now, fundraiser.activeDays));
+                    endDateString = date.format(endDate,'YYYY-MM-DD');                   
                 }
                 else if (newStatusValue == fundraiserStatus.deactivated) {                 
                     endDateString = date.format(new Date(),'YYYY-MM-DD');
@@ -310,6 +322,7 @@ exports.updateStatus = async (request, response, next) => {
                     status: newStatusValue,
                     endDate: endDateString
                 })
+                
                 Fundraiser.findByIdAndUpdate(
                     fundraiserId, updatedFundraiser, (error, fundraiser) => {
                         if (error) {

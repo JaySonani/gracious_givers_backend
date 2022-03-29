@@ -2,8 +2,10 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const AdminUser = require("../models/AdminUser");
+const nodeMailer = require("nodemailer");
 exports.register = async (request, response) => {
-  const { user_id, password, ngo_name, target_group, email } = request.body;
+  const { user_id, password, ngo_name, target_group, email, description } =
+    request.body;
 
   //encrypt password
   const salt = await bcrypt.genSalt(10);
@@ -15,6 +17,8 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
+    description: "Details", //meant to be removed
+    status: "Pending Admin Approval",
   });
 
   try {
@@ -43,7 +47,7 @@ exports.loginNgo = async (request, response) => {
         message: "User not found",
         success: false,
       };
-      return response.status(404).json(errorResponse);
+      return response.status(200).json(errorResponse);
     }
     //compare password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -52,7 +56,7 @@ exports.loginNgo = async (request, response) => {
         message: "Invalid password",
         success: false,
       };
-      return response.status(401).json(errorResponse);
+      return response.status(200).json(errorResponse);
     }
 
     return response.status(200).json({
@@ -106,15 +110,88 @@ exports.loginAdmin = async (request, response) => {
       };
       return response.status(401).json(errorResponse);
     }
-    // delete user.password;
-    //user = user.toJSON();
-    //console.log(user);
+
     return response.status(200).json({
       message: "User logged in successfully",
       success: true,
       isAdmin: true, //isAdmin is a flag to indicate if the user is an admin
       user, //delete password from the response
     });
+  } catch (err) {
+    const errorResponse = {
+      message: err,
+      success: false,
+    };
+    response.status(500).json(errorResponse);
+  }
+};
+
+exports.forgotPassword = async (request, response) => {
+  const { email } = request.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const errorResponse = {
+        message: "User not found",
+        success: false,
+      };
+      return response.status(404).json(errorResponse);
+    }
+    const mailTransport = nodeMailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "graciousgiversweb@gmail.com",
+        pass: "GraciousDon123",
+      },
+    });
+    const mailParams = {
+      from: "graciousgiversweb@gmail.com",
+      to: email,
+      subject: "Password Reset",
+      text: "Click on the link to reset your password",
+      html: `<a href="http://localhost:3000/RecoverPassword/${user.email}">Please click on this to Reset the Password</a>`,
+    };
+    mailTransport.sendMail(mailParams, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent !!: " + info.response);
+      }
+    });
+    const successResponse = {
+      message: "Email sent !!",
+      success: true,
+    };
+    response.status(200).json(successResponse);
+  } catch (err) {
+    const errorResponse = {
+      message: err,
+      success: false,
+    };
+    response.status(500).json(errorResponse);
+  }
+};
+
+exports.resetPassword = async (request, response) => {
+  const { password, email } = request.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const errorResponse = {
+        message: "User not found",
+        success: false,
+      };
+      return response.status(404).json(errorResponse);
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.password = hashedPassword;
+    await user.save();
+    const successResponse = {
+      message: "Password reset successfully",
+      success: true,
+    };
+    response.status(200).json(successResponse);
   } catch (err) {
     const errorResponse = {
       message: err,

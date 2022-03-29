@@ -1,3 +1,5 @@
+// Author: Akanksha Singh (B00892887)
+
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
