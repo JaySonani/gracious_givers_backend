@@ -1,3 +1,6 @@
+/**
+ * Author: Venkata Saikiran Kattekola (B00857007)
+ */
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
