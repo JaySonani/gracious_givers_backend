@@ -20,7 +20,7 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
-    description: "Details", //meant to be removed
+    description,
     status: "Pending Admin Approval",
   });
 
