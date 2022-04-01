@@ -19,6 +19,7 @@ const fundraiserRoute = require("./routes/fundraiser");
 const authorizationRoute = require("./routes/authorizationRoute");
 const notificationRoute = require("./routes/notification");
 const ngoRoute = require("./routes/ngo");
+const photoGallery = require("./routes/photo_gallery");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -31,6 +32,7 @@ app.use("/fundraiser", fundraiserRoute);
 app.use("/getNotification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
+app.use("/photoGallery", photoGallery)
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));
