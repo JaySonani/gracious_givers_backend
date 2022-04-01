@@ -6,5 +6,7 @@ const StoryController = require('../controllers/photo_gallery');
 
 //Get Notification
 router.get("/getFundraiserStory", StoryController.home);
+router.post("/addFundraiserStory", StoryController.home);
+router.post("/updateFundraiserStory", StoryController.home);
 
 module.exports = router;
