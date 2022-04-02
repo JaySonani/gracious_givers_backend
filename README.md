@@ -2,6 +2,10 @@ Repo URL: https://git.cs.dal.ca/sonani/gracious_givers_backend
 
 Deployment URL: https://gracious-givers-backend.herokuapp.com/
 
+# Assigment 3
+
+* Author: [Viraj Jigar Shah](viraj.shah@dal.ca)
+
 ### Members of Group 8:
 - Akanksha Singh  
 - Jay Nimeshkumar Patel  
