@@ -56,7 +56,7 @@ we have used Heroku for Hosting our application. we have hosted frontend and bac
 Photo Gallery for NGO
 
 ## Task of feature
-Includes Add Story(content and images), show stories, delete stories 
+Includes Add Story(content and images), Show Stories, Delete Stories 
 
 ## List of Files of the feature Photo Gallery for NGO
 *[Description]* 
