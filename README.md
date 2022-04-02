@@ -21,7 +21,8 @@ Deployment URL: https://gracious-givers-backend.herokuapp.com/
 * Git URL for main Branch (Frontend): https://git.cs.dal.ca/akankshas/group8_csci5709
 * Git URL for indivual Repo (Backend): https://git.cs.dal.ca/sonani/gracious_givers_backend/-/tree/viraj_shah
 * Git URL for indivual Repo (Frontend): https://git.cs.dal.ca/akankshas/group8_csci5709/-/tree/viraj_shah
-* Link of Deployed Application: https://gracious-givers-frontend-web.herokuapp.com/
+* Link of Deployed Application(Frontend): https://gracious-givers-frontend-web.herokuapp.com/
+* Link of Deployed Application(Backend): https://gracious-givers-backend-web.herokuapp.com/
 * Link of My Feature : https://gracious-givers-frontend-web.herokuapp.com/addImage
 
 * To access my Feature you need to follow below steps:
