@@ -114,6 +114,23 @@ React BootStrap
 * [EditStoryComponent.js]
 * [ShowStoryComponent.js]
 
+### References:
+
+I have used this references for my frontend work.
+(https://mui.com/components/grid/)
+(https://mui.com/system/styled/) 
+(https://mui.com/components/cards/)
+(https://mui.com/api/card-content/)
+(https://mui.com/api/typography/)
+(https://mui.com/components/text-fields/)
+(https://mui.com/components/buttons/)
+(https://mui.com/api/card-actions/)
+(https://mui.com/api/card-action-area/)
+
+I have used the below referencew for my multer.js file
+(https://github.com/Mohammed-Abdelhady/MERN-Uload-Image)
+
+
 
 
 
