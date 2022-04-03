@@ -39,14 +39,14 @@ app.use("/photoGallery", photoGallery)
 const path = require("path")
 app.use("/public", express.static(path.join(__dirname, "public")));
 //app.use("/server/uploads", express.static(path.join(__dirname, "server/uploads")));
-app.use("/middleware/uploads", express.static(path.join(__dirname, "/middleware/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use(
     "uploads",
     express.static(path.join(__dirname, "uploads"))
 );
 
-const { static } = require("express");
-app.use("/images/", static("./uploads/fundraiser/image"));
+// const { static } = require("express");
+// app.use("/images/", static("./uploads/fundraiser/image"));
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {

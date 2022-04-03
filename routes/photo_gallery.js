@@ -9,6 +9,6 @@ const photoGalleryController = require('../controllers/photo_gallery');
 router.get("/getFundraiserStory", photoGalleryController.home);
 router.post("/addFundraiserStory", upload.single('NGOStory'), photoGalleryController.uploads);
 router.get("/updateFundraiserStory", photoGalleryController.editImages);
-router.post("/deleteFundraiserStory", photoGalleryController.deleteImages);
+router.post("/deleteFundraiserStory", upload.single('event'), photoGalleryController.deleteImages);
 
 module.exports = router;
