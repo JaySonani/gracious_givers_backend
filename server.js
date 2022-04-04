@@ -20,6 +20,7 @@ const fundraiserRoute = require("./routes/fundraiser");
 const authorizationRoute = require("./routes/authorizationRoute");
 const notificationRoute = require("./routes/notification");
 const ngoRoute = require("./routes/ngo");
+const contactUsRoute = require("./routes/contactus");
 const photoGallery = require("./routes/photo_gallery");
 
 // Default URL of backend
@@ -33,6 +34,7 @@ app.use("/fundraiser", fundraiserRoute);
 app.use("/getNotification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
+app.use("/contact_us", contactUsRoute)
 app.use("/photoGallery", photoGallery)
 
 // serving static files
