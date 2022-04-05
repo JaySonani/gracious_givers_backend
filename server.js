@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
 const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
-app.use(express.json())
+app.use(express.json({limit: '25mb'}))
 
 app.use(cors())
 
@@ -19,6 +19,7 @@ const fundraiserRoute = require("./routes/fundraiser");
 const authorizationRoute = require("./routes/authorizationRoute");
 const notificationRoute = require("./routes/notification");
 const ngoRoute = require("./routes/ngo");
+const contactUsRoute = require("./routes/contactus");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -28,9 +29,10 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
-app.use("/notification", notificationRoute);
+app.use("/getNotification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
+app.use("/contact_us", contactUsRoute)
 
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));

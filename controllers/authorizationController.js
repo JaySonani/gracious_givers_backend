@@ -1,3 +1,6 @@
+/**
+ * Author: Venkata Saikiran Kattekola (B00857007)
+ */
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -17,7 +20,7 @@ exports.register = async (request, response) => {
     email,
     ngo_name,
     target_group,
-    description: "Details", //meant to be removed
+    description,
     status: "Pending Admin Approval",
   });
 
@@ -47,8 +50,24 @@ exports.loginNgo = async (request, response) => {
         message: "User not found",
         success: false,
       };
-      return response.status(200).json(errorResponse);
+      return response.status(400).json(errorResponse);
     }
+    // compare user status
+    if (user.status == "Deactivated") {
+      const errorResponse = {
+        message: "Your account has been deactivated by admin",
+        success: false,
+      };
+      return response.status(400).json(errorResponse);
+    } else if (user.status == "Pending Admin Approval") {
+      const errorResponse = {
+        message:
+          "Your account is yet to be approved by admin, please try again later",
+        success: false,
+      };
+      return response.status(400).json(errorResponse);
+    }
+
     //compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -56,7 +75,7 @@ exports.loginNgo = async (request, response) => {
         message: "Invalid password",
         success: false,
       };
-      return response.status(200).json(errorResponse);
+      return response.status(401).json(errorResponse);
     }
 
     return response.status(200).json({
