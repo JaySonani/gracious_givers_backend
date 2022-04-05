@@ -30,7 +30,7 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
-app.use("/getNotification", notificationRoute);
+app.use("/notification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
 app.use("/contact_us", contactUsRoute)
