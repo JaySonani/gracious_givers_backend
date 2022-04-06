@@ -1,3 +1,5 @@
+// Author: Viraj Jigar Shah (B00879448)
+
 const photoGallery = require("../models/PhotoGallery");
 const { IMAGE_BASE_URL } = require('../middleware/config');
 
