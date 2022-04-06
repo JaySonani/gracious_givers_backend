@@ -50,6 +50,7 @@ exports.deleteImages = async (req, res, next) => {
 
         console.log('===============id=====================')
         const id = req.body.event
+        console.log(req.body)
         console.log(id)
         console.log('===============id=====================')
 
