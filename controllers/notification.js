@@ -9,7 +9,7 @@ exports.getAdminNotification = async (request, response, next) => {
         status: pendingStatus
     };
     try {
-        //get notification for Admin 
+        //Get notification for Admin - Look up events with pending approval
         EventsNotification.find(findPendingApproval)
             .then((notifications) => {
                 if (!notifications) {
@@ -41,15 +41,19 @@ exports.getAdminNotification = async (request, response, next) => {
     }
 };
 
-const updatedStatus = "[]";
+
 
 //Get Notification - NGO
 exports.getNgoNotification = async (request, response, next) => {
-    const ngoEvents = {
-        status: updatedStatus
-    };
+
     try {
-        EventsNotification.aggregate([
+        //Get notification for NGO - Look up events with updated status also get donation details from MongoDB
+        let result = await EventsNotification.aggregate([
+            {
+                $match: {
+                    status: { "$in": ["Active", "Deactivated"] }
+                }
+            },
             {
                 $lookup: {
                     from: "donations",
@@ -58,29 +62,17 @@ exports.getNgoNotification = async (request, response, next) => {
                     as: "event_donations"
                 }
             }
-        ]).exec((error, result) => {
-            if (error) {
-                const errorMessage = {
-                    message: "Unable to get notification",
-                    errorDescription: error,
-                    success: false,
-                };
-                response.status(500).send(errorMessage);
-            }
-            if (result) {
-                const newResult = result.filter((events) => {
-                    if (events.event_donations.length > 0) {
-                        return events;
-                    }
-                })
-                //console.log(newResult.length+" "+result.length);
-                response.status(200).send(newResult);
-            }
-        });
+
+        ]);
+
+        response.status(200).send( result );
+        
 
     } catch (error) {
+
         const errorMessage = {
-            message: err,
+            message: "Unable to get notification",
+            errorDescription: error,
             success: false,
         };
         response.status(500).send(errorMessage);
