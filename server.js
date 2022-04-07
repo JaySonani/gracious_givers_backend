@@ -4,6 +4,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path')
 
 // Configuring server
 const app = express()
@@ -22,6 +23,7 @@ const ngoRoute = require("./routes/ngo");
 const contactUsRoute = require("./routes/contactus");
 const photoGallery = require("./routes/photo_gallery");
 
+
 // Default URL of backend
 app.get("/", (request, response) => {
     response.send("Hello from Gracious Givers Backend!");
@@ -39,6 +41,7 @@ app.use("/photoGallery", photoGallery)
 const { static } = require("express");
 app.use("/images/", static("./uploads/fundraiser/image"));
 
+app.use("/uploads", static(path.join(__dirname, "uploads")));
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
     return response.status(404).json({
