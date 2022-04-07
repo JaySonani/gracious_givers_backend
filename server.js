@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
 const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
-app.use(express.json())
+app.use(express.json({limit: '25mb'}))
 
 app.use(cors())
 
@@ -29,7 +29,7 @@ app.get("/", (request, response) => {
 // Define all routes here
 app.use("/donation", donationRoute);
 app.use("/fundraiser", fundraiserRoute);
-app.use("/getNotification", notificationRoute);
+app.use("/notification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
 app.use("/contact_us", contactUsRoute)
