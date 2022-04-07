@@ -3,6 +3,10 @@
 const mongoose = require('mongoose');
 
 const uploadSchema = new mongoose.Schema({
+    // eventId: {
+    //     type: String,
+    //     required: true
+    // },
     description: {
         type: String,
         required: true
