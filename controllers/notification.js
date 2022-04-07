@@ -1,3 +1,5 @@
+// Author: Arjun Naravula Loganathan
+
 const EventsNotification = require("../models/Fundraiser");
 const DonationNotification = require("../models/Donation");
 
