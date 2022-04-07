@@ -19,6 +19,7 @@ exports.home = async (req, res) => {
             success: false,
         };
         response.status(500).send(errorMessage);
+
     }
 };
 
