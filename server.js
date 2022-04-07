@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
 const url = "mongodb+srv://root:root@webcluster.nkpwa.mongodb.net/GraciousGivers?retryWrites=true&w=majority"
-app.use(express.json({limit: '25mb'}))
+app.use(express.json({ limit: '25mb' }))
 
 app.use(cors())
 
@@ -20,6 +20,7 @@ const authorizationRoute = require("./routes/authorizationRoute");
 const notificationRoute = require("./routes/notification");
 const ngoRoute = require("./routes/ngo");
 const contactUsRoute = require("./routes/contactus");
+const photoGallery = require("./routes/photo_gallery");
 
 // Default URL of backend
 app.get("/", (request, response) => {
@@ -33,9 +34,20 @@ app.use("/notification", notificationRoute);
 app.use("/auth", authorizationRoute);
 app.use("/ngo", ngoRoute);
 app.use("/contact_us", contactUsRoute)
+app.use("/photoGallery", photoGallery)
 
-const { static } = require("express");
-app.use("/images/", static("./uploads/fundraiser/image"));
+// serving static files
+const path = require("path")
+app.use("/public", express.static(path.join(__dirname, "public")));
+//app.use("/server/uploads", express.static(path.join(__dirname, "server/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+app.use(
+    "uploads",
+    express.static(path.join(__dirname, "uploads"))
+);
+
+// const { static } = require("express");
+// app.use("/images/", static("./uploads/fundraiser/image"));
 
 // Default response for any route that is not defined
 app.use("*", (request, response) => {
@@ -44,6 +56,7 @@ app.use("*", (request, response) => {
         success: false,
     });
 });
+
 
 // MongoDb connection
 mongoose.connect(url).then((result) => {
