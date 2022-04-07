@@ -6,6 +6,11 @@ const { IMAGE_BASE_URL } = require('../middleware/config');
 exports.home = async (req, res) => {
 
     try {
+
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+        res.setHeader('Access-Control-Allow-Credentials', true); // If needed
         console.log('finally!! HOME')
         const all_images = await photoGallery.find()
         console.log(all_images)
