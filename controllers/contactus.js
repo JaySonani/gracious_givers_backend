@@ -16,7 +16,7 @@ const transporter = nodeMailer.createTransport({
 
 exports.contactUs = async (request, response, next) => {
     try {
-        const firstName = request.body.firstname;
+        const firstName = request.body.firstName;
         const lastName = request.body.lastName;
         const email = request.body.email;
         const subject = request.body.subject;
