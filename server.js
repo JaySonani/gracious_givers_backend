@@ -57,6 +57,7 @@ app.use("*", (request, response) => {
     });
 });
 
+
 // MongoDb connection
 mongoose.connect(url).then((result) => {
     console.log('Connected to MongoDB database!');
