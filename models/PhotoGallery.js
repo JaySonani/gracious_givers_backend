@@ -3,10 +3,10 @@
 const mongoose = require('mongoose');
 
 const uploadSchema = new mongoose.Schema({
-    // eventId: {
-    //     type: String,
-    //     required: true
-    // },
+    eventID: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true
@@ -17,4 +17,4 @@ const uploadSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('uploadImage', uploadSchema);
+module.exports = mongoose.model('uploadImageId', uploadSchema);
