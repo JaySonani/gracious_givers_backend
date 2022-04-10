@@ -8,49 +8,32 @@ exports.home = async (req, res) => {
     try {
 
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-        res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
         console.log('finally!! HOME')
-        const all_images = await photoGallery.find()
-        console.log(all_images)
 
-        return res.status(200).json(all_images)
-    }// res.render('main', { images : all_images });
+        const str = (req.query.eventID).toString();
+        console.log(str)
+        const images = await photoGallery.find({ eventID: str })
+        console.log(images)
+
+        return res.status(200).json(images)
+    }
     catch (err) {
         console.log(err);
         const errorMessage = {
             message: err,
             success: false,
         };
-        response.status(500).send(errorMessage);
+        res.status(500).send(errorMessage);
 
     }
 };
 
-// exports.editImages = async (req, res) => {
-
-//     try {
-//         console.log('finally!! EDIT ')
-//         const all_images = await photoGallery.find()
-//         console.log(all_images)
-
-//         return res.status(200).json(all_images)
-//         // res.render('main', { images : all_images });
-//     } catch (err) {
-//         console.log(err);
-//         const errorMessage = {
-//             message: err,
-//             success: false,
-//         };
-//         response.status(500).send(errorMessage);
-//     }
-// }
-
 exports.deleteImages = async (req, res, next) => {
     try {
         console.log('finally!! DELETE')
-        // console.log(req.body.desc)
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
@@ -63,13 +46,11 @@ exports.deleteImages = async (req, res, next) => {
         console.log('===============id=====================')
 
         photoGallery.deleteOne({ _id: id }, function (err) {
-            //if (err) return handleError(err);
             if (err) {
                 var error = 'Something bad happened, try again!';
                 if (err.code === 11000) {
                     error = 'That email is already taken, try another.';
                 }
-                //res.render('register.jade', { error: error });
             }
             else {
                 console.log('deleted')
@@ -83,25 +64,24 @@ exports.deleteImages = async (req, res, next) => {
 exports.uploads = async (req, res, next) => {
     try {
         console.log('finally!! UPLOADS')
-        // console.log(req.body.desc)
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-        res.setHeader('Access-Control-Allow-Credentials', true); // If needed
-        //console.log(res)
-
-        console.log(req.body.NGOStory)
-        console.log(req.body.filename)
-        console.log(req.file)
-        console.log(req.file.filename)
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
 
         const description = req.body.desc;
-        //console.log('finally!!')
-        ///console.log(req.file.path)
-        // const imagePath = `${IMAGE_BASE_URL}/${req.file.filename}`
+        const eventName = req.body.eventName;
+        const eventID = req.body.eventID;
+
+        console.log(description)
+        console.log(eventName)
+        console.log(eventID)
+        console.log(typeof eventID)
+
         const imagePath = `${IMAGE_BASE_URL}/${req.file.filename}`
         console.log(imagePath)
         const imgObj = {
+            eventID: eventID,
             description: description,
             image: imagePath
         }
